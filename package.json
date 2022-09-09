@@ -1,0 +1,16 @@
+{
+    "private": "true",
+    "scripts": {
+        "postinstall": "dotnet tool restore",
+        "start": "dotnet fable watch src/App -s -o dist -e .jsx --run vite",
+        "publish": "dotnet fsi build.fsx publish"
+    },
+    "dependencies": {
+        "solid-js": "^1.5.4"
+    },
+    "devDependencies": {
+        "vite": "^3.1.0",
+        "vite-plugin-solid": "^2.3.0",
+        "babel-preset-solid": "^1.5.4"
+    }
+}

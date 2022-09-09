@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Components.fs" />
+    <Compile Include="App.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Elmish.Solid\Elmish.Solid.fsproj" />
+    <ProjectReference Include="..\..\..\Feliz.JSX\src\Feliz.JSX.Solid\Feliz.JSX.Solid.fsproj" />
+  </ItemGroup>
+
+</Project>
