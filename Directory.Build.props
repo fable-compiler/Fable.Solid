@@ -2,11 +2,11 @@
     <!-- NuGet Metadata -->
     <PropertyGroup>
         <PackageProjectUrl>https://fable.io</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/fable-compiler/fable-react</RepositoryUrl>
+        <RepositoryUrl>https://github.com/fable-compiler/Fable.Solid</RepositoryUrl>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>fable_logo.png</PackageIcon>
-        <PackageTags>fsharp;fable;javascript;f#;js;react</PackageTags>
+        <PackageTags>fsharp;fable;javascript;f#;js;solid;solidjs</PackageTags>
         <Authors>Fable contributors</Authors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
