@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Elmish.Solid\Elmish.Solid.fsproj" />
-    <ProjectReference Include="..\..\..\Feliz.JSX\src\Feliz.JSX.Solid\Feliz.JSX.Solid.fsproj" />
+    <PackageReference Include="Feliz.JSX.Solid" Version="1.0.0-beta-001" />
   </ItemGroup>
 
 </Project>

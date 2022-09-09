@@ -10,5 +10,5 @@ let args =
 match args with
 | IgnoreCase "publish"::_ ->
     pushFableNuget "src/Fable.Solid/Fable.Solid.fsproj" [] doNothing
-    // pushFableNuget "src/Elmish.Solid/Elmish.Solid.fsproj" [] doNothing
+    pushFableNuget "src/Elmish.Solid/Elmish.Solid.fsproj" [] doNothing
 | _ -> ()
