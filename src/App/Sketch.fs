@@ -24,8 +24,8 @@ open Util
 
 type Components with
     [<JSX.Component>]
-    static member Sketch(initialSide: float) =
-        let gridSideLength, setGridSideLength = Solid.createSignal(initialSide)
+    static member Sketch() =
+        let gridSideLength, setGridSideLength = Solid.createSignal(10.)
         let gridTemplateString = Solid.createMemo(fun () ->
             $"repeat({gridSideLength()}, {maxGridPixelWidth / gridSideLength()}px)")
 

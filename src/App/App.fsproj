@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Solid.Router.fs" />
     <Compile Include="Components.fs" />
     <Compile Include="Counter.fs" />
     <Compile Include="Svg.fs" />
@@ -17,7 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Elmish.Solid\Elmish.Solid.fsproj" />
     <PackageReference Include="Feliz.JSX.Solid" Version="1.0.0-beta-001" />
-    <PackageReference Include="Fable.Core" Version="4.0.0-theta-004" />
   </ItemGroup>
 
 </Project>
