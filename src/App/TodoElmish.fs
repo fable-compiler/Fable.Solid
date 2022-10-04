@@ -226,7 +226,9 @@ open Util
 type Components with
     [<JSX.Component>]
     static member TodoElmish() =
-        let model, dispatch = Solid.createElmishStore(init, update)
+        // Solid can optimize updates better if we only use plain objects and arrays
+        // so we create an according transformation to be used in the view
+        let todos, dispatch = Solid.createElmishStore(init, update, fun (m: State) -> List.toArray m.Todos)
 
         Html.fragment [
             Html.p [
@@ -240,7 +242,7 @@ type Components with
 
             Html.ul [
                 Html.children [
-                    Solid.For(List.toArray model.Todos, fun todo _ ->
+                    Solid.For(todos, fun todo _ ->
                         TodoView todo dispatch)
                 ]
             ]
