@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fable.Browser.Dom" Version="2.10.0" />
-    <PackageReference Include="Fable.Core" Version="4.0.0-theta-001" />
+    <PackageReference Include="Fable.Core" Version="4.0.0-theta-004" />
   </ItemGroup>
 
 </Project>

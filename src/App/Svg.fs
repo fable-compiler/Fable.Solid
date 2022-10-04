@@ -4,6 +4,8 @@ module Svg
 open Fable.Core
 open Feliz.JSX.Solid
 
+printfn $"Loading {__SOURCE_FILE__}..."
+
 type Components with
     [<JSX.Component>]
     static member Svg() =

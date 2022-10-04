@@ -5,6 +5,8 @@ open Fable.Core
 open Browser.Types
 open Feliz.JSX.Solid
 
+printfn $"Loading {__SOURCE_FILE__}..."
+
 module private Util =
     open Fable.Core.JsInterop
 

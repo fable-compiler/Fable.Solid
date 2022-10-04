@@ -7,6 +7,8 @@ open Feliz.JSX.Solid
 open Elmish.Solid
 open type Components
 
+printfn $"Loading {__SOURCE_FILE__}..."
+
 module private App =
     open System
     open Elmish
@@ -36,7 +38,6 @@ module private App =
             Completed = false
             Editing = None
         }
-
 
     let initTodos() = [
         newTodo "Learn F#"

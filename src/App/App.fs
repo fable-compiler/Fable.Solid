@@ -6,6 +6,13 @@ open Fable.Core
 open Solid
 open type Components
 
+type Lazy =
+    static member Counter() = Solid.lazyImport Counter
+    static member Svg() = Solid.lazyImport Svg
+    static member Sketch() = Solid.lazyImport Sketch
+    static member TodoElmish() = Solid.lazyImport TodoElmish
+    static member Shoelace() = Solid.lazyImport Shoelace
+
 [<JSX.Component>]
 let Tab(href: string, txt: string) =
     Html.li (Router.Link(href, Html.text txt))
@@ -38,11 +45,11 @@ let Tabs() =
             ]
             Html.children [
                 Router.Routes [
-                    Router.Route("/counter", ``component``=Counter)
-                    Router.Route("/svg", ``component``=Svg)
-                    Router.Route("/sketch", ``component``=Sketch)
-                    Router.Route("/elmish", ``component``=TodoElmish)
-                    Router.Route("/shoelace", ``component``=Shoelace)
+                    Router.Route("/counter", ``component`` = Lazy.Counter)
+                    Router.Route("/svg", ``component`` = Lazy.Svg)
+                    Router.Route("/sketch", ``component`` = Lazy.Sketch)
+                    Router.Route("/elmish", ``component`` = Lazy.TodoElmish)
+                    Router.Route("/shoelace", ``component`` = Lazy.Shoelace)
                 ]
             ]
         ]

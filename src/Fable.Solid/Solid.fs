@@ -67,6 +67,16 @@ type Solid =
 
     static member inline ref<'El when 'El :> Browser.Types.Element>(r: 'El ref): JSX.Prop = "ref", box(fun el -> r.Value <- el)
 
+    /// Exposes a JSX.Component through a lazy import, `lazy` must wrap the full body of the component.
+    [<Import("lazy", "solid-js"); JS.RemoveSurroundingArgs>]
+    static member ``lazy``(import: unit -> JS.Promise<'T>): JSX.Element = jsNative
+
+    // Solid (like React) expects a default export, that's why we wrap the returned result
+
+    /// Automatically creates a lazy component with a dynamic import to the referenced value
+    static member inline lazyImport(com: JSX.ElementType): JSX.Element =
+        Solid.``lazy``(fun () -> (importValueDynamic com).``then``(fun x -> createObj ["default" ==> x]))
+
     [<ImportMember("solid-js")>]
     static member onMount(value: unit -> unit): unit = jsNative
 
