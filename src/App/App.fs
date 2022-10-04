@@ -1,10 +1,9 @@
 module App
 
 open Browser
-open Browser.Types
 open Feliz.JSX.Solid
 open Fable.Core
-open Components
+open type Components
 
 // Entry point must be in a separate file
 // for Vite Hot Reload to work
@@ -69,9 +68,9 @@ let Tabs() =
                 Solid.Switch([
                     Solid.Match(activeTab() = Tab.Counter, Counter())
                     Solid.Match(activeTab() = Tab.Svg, Svg())
-                    Solid.Match(activeTab() = Tab.Sketch, Sketch.App(10.))
-                    Solid.Match(activeTab() = Tab.TodoElmish, TodoElmish.App())
-                    Solid.Match(activeTab() = Tab.Shoelace, Shoelace.App())
+                    Solid.Match(activeTab() = Tab.Sketch, Sketch(10.))
+                    Solid.Match(activeTab() = Tab.TodoElmish, TodoElmish())
+                    Solid.Match(activeTab() = Tab.Shoelace, Shoelace())
                 ])
             ]
         ]
