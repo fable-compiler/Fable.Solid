@@ -163,7 +163,6 @@ module private Util =
 
     [<JSX.Component>]
     let TodoView (todo: Todo) dispatch =
-        printfn "Render todo"
         let inputRef = Solid.createRef<HTMLInputElement>()
         let isEditing() = Option.isSome todo.Editing
         let isNotEditing() = Option.isNone todo.Editing
@@ -206,10 +205,7 @@ module private Util =
                             [ "fa"; "fa-save" ]
 
                         Button isNotEditing (fun () -> ToggleCompleted todo.Id |> dispatch)
-                            [ "is-success", (
-                                printfn "Render complete"
-                                todo.Completed
-                            ) ]
+                            [ "is-success", todo.Completed ]
                             [ "fa"; "fa-check" ]
 
                         Button isNotEditing (fun () -> StartEditingTodo todo.Id |> dispatch)
@@ -230,9 +226,7 @@ open Util
 type Components with
     [<JSX.Component>]
     static member TodoElmish() =
-        // Solid can optimize updates better if we only use plain objects and arrays
-        // so we create an according transformation to be used in the view
-        let todos, dispatch = Solid.createElmishStore(init, update, fun (m: State) -> List.toArray m.Todos)
+        let model, dispatch = Solid.createElmishStore(init, update)
 
         Html.fragment [
             Html.p [
@@ -246,7 +240,7 @@ type Components with
 
             Html.ul [
                 Html.children [
-                    Solid.For(todos, fun todo _ ->
+                    Solid.For(List.toArray model.Todos, fun todo _ ->
                         TodoView todo dispatch)
                 ]
             ]
