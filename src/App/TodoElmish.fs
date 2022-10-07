@@ -111,36 +111,27 @@ module private Util =
 
     [<JSX.Component>]
     let InputField (dispatch: Msg -> unit) =
-        let inputRef = Solid.createRef<HTMLInputElement>()
-        Div [ "field"; "has-addons" ] [
-           Div [ "control"; "is-expanded" ] [
-                Html.input [
-                    Solid.ref inputRef
-                    Attr.classList [ "input"; "is-medium" ]
-                    Attr.autoFocus true
-                    Ev.onKeyUp (onEnterOrEscape (AddNewTodo >> dispatch) ignore)
-                ]
-            ]
-
-           Div [ "control" ] [
-                Html.button [
-                    Attr.classList [
-                        "button"
-                        "is-primary"
-                        "is-medium"
-                    ]
-                    Ev.onClick (fun _ ->
-                        let txt = inputRef.Value.value
-                        inputRef.Value.value <- ""
-                        txt |> AddNewTodo |> dispatch)
-                    Html.children [
-                        Html.i [
-                            Attr.classList [ "fa"; "fa-plus" ]
-                        ]
-                    ]
-                ]
-            ]
-        ]
+        let mutable input = Unchecked.defaultof<HTMLInputElement>
+        JSX.jsx $"""
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <input class="input is-medium"
+                       autoFocus={true}
+                       ref={fun el -> input <- el}
+                       onKeyUp={onEnterOrEscape (AddNewTodo >> dispatch) ignore}>
+                </input>
+            </div>
+            <div class="control">
+                <button class="button is-primary is-medium"
+                    onClick={fun _ ->
+                        let txt = input.value
+                        input.value <- ""
+                        txt |> AddNewTodo |> dispatch}>
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        """
 
     [<JSX.Component>]
     let Button isVisible dispatch classes (iconClasses: string list) =

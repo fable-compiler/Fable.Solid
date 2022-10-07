@@ -21,42 +21,31 @@ module private Util =
         let inputRef = Solid.createRef<HTMLInputElement>()
         let position, setPosition = Solid.createSignal(25)
 
-        Html.fragment [
-            Html.div [
-                Html.input [
-                    Solid.ref inputRef
-                    Attr.typeRange
-                    Attr.min 1
-                    Attr.max 100
-                    Attr.value (position() |> string)
-                    Ev.onTextInput (fun (value: string) -> value |> int |> setPosition)
-                ]
-            ]
-
-            // We can invoke registered web components "dynamically" without bindings
-            JSX.create "sl-image-comparer" [
-                "position" ==> position()
-                // Solid request that non-native events are prefixed with `on:`
-                "on:sl-change" ==> (fun (ev: Event) ->
+        JSX.jsx $"""
+        <>
+            <div>
+                <input type="range" min="1" max="100" value={position()}
+                    ref={fun el -> inputRef.Value <- el}
+                    onInput={fun (ev: Event) ->
+                        ev.target?value |> int |> setPosition}
+                ></input>
+            </div>
+            <sl-image-comparer
+                position={position()}
+                on:sl-change={fun (ev: Event) ->
                     let pos: int = ev.target?position
                     // The input is an "uncontrolled" element so we need to update it manually
                     inputRef.Value.value <- string pos
-                    setPosition pos
-                )
-                Html.children [
-                    Html.img [
-                        Attr.slot "before"
-                        Attr.src "https://images.unsplash.com/photo-1520903074185-8eca362b3dce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1200&q=80"
-                        Attr.alt "A person sitting on bricks wearing untied boots."
-                    ]
-                    Html.img [
-                        Attr.slot "after"
-                        Attr.src "https://images.unsplash.com/photo-1520640023173-50a135e35804?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-                        Attr.alt "A person sitting on a yellow curb tying shoelaces on a boot."
-                    ]
-                ]
-            ]
-        ]
+                    setPosition pos}>
+                <img slot="before"
+                    src="https://images.unsplash.com/photo-1520903074185-8eca362b3dce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1200&q=80"
+                    alt="A person sitting on bricks wearing untied boots."></img>
+                <img slot="after"
+                    src="https://images.unsplash.com/photo-1520640023173-50a135e35804?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
+                    alt="A person sitting on a yellow curb tying shoelaces on a boot."></img>
+            </sl-image-comparer>
+        </>
+        """
 
     [<JSX.Component>]
     let QrCode() =
