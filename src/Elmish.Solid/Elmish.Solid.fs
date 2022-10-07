@@ -1,11 +1,12 @@
 module Elmish.Solid
 
 open Elmish
+open Fable.Core
+open Fable.Core.JsInterop
+open System.Runtime.CompilerServices
+open System.Runtime.InteropServices
 
-module private Util =
-    open Fable.Core
-    open Fable.Core.JsInterop
-
+module Util =
     let isPlainObj (obj: obj): bool =
         emitJsExpr obj "$0 != null && typeof $0 === 'object' && Object.getPrototypeOf($0) === Object.prototype"
 
@@ -24,27 +25,57 @@ module private Util =
 
 type Solid with
     /// Initialize a SolidJS store using an Elmish program: https://www.solidjs.com/tutorial/stores_nested_reactivity
-    /// SolidJS can optimize updates for plain JS objects and arrays in the store, so you can provide a projection
-    /// to do this transformation (e.g. convert records into anonymous records and lists into arrays)
-    static member createElmishStore(program: Program<unit, 'Model, 'Msg, unit>, projection: 'Model -> 'ViewModel): 'ViewModel * ('Msg -> unit) =
-        let mutable dispatch' = Unchecked.defaultof<_>
-        let model, cmd = Program.init program ()
+    /// Attention: use arrays instead of lists for better performance
+    static member
+#if DEBUG
+        inline
+#endif
+        createElmishStore(
+            program: Program<unit, 'Model, 'Msg, unit>
+#if DEBUG
+            , [<CallerFilePath; Optional; DefaultParameterValue("")>] callerPath: string
+#endif
+        ): 'Model * ('Msg -> unit) =
 
+        let mutable disposed = false
+        let mutable dispatch = Unchecked.defaultof<_>
+        let mutable model, cmd = Program.init program ()
+#if DEBUG
+        emitJsStatement () $"""
+        if (import.meta.hot) {{
+            import.meta.hot.accept();
+            import.meta.hot.dispose(data => {{
+                data.elmish = data.elmish || {{}};
+                data.elmish[{callerPath}] = {model};
+            }});
+            if (import.meta.hot.data.elmish && import.meta.hot.data.elmish[{callerPath}]) {{
+                {cmd <- Cmd.none};
+                {model} = import.meta.hot.data.elmish[{callerPath}];
+            }}
+        }}
+        """
+#endif
         // We need to deep clone the model before creating the store to avoid conflicts during the updates
-        let store, setStore = model |> projection |> Util.deepClone |> Solid.createStore
+        let store, setStore = model |> Util.deepClone |> Solid.createStore
+        Solid.onCleanup(fun () -> disposed <- true)
 
         program
-        |> Program.map (fun _ _ -> model, cmd) id id id id id
-        |> Program.withSetState (fun model dispatch ->
-            dispatch' <- dispatch
-            let projected = projection model
-            projected |> Util.deepClone |> Solid.reconcile |> setStore.Update)
+        |> Program.map
+            (fun _ _ -> model, cmd) id id id id
+            (fun (predicate, terminate) ->
+                (fun msg -> predicate msg || disposed),
+                (fun model -> terminate model))
+        |> Program.withSetState (fun model' dispatch' ->
+            dispatch <- dispatch'
+            // Skip update if model hasn't changed
+            if not(obj.ReferenceEquals(model, model')) then
+                model <- model'
+                model' |> Util.deepClone |> Solid.reconcile |> setStore.Update)
         |> Program.run
 
-        store.Value, dispatch'
+        store.Value, dispatch
 
     /// Initialize a SolidJS store using an Elmish program: https://www.solidjs.com/tutorial/stores_nested_reactivity
-    /// SolidJS can optimize updates for plain JS objects and arrays in the store, so you can provide a projection
-    /// to do this transformation (e.g. convert records into anonymous records and lists into arrays)
-    static member createElmishStore(init: unit -> 'Model * Cmd<'Msg>, update: 'Msg -> 'Model -> 'Model * Cmd<'Msg>, projection: 'Model -> 'ViewModel) =
-        Solid.createElmishStore(Program.mkProgram init update (fun _ _ -> ()), projection)
+    /// Attention: use arrays instead of lists for better performance
+    static member inline createElmishStore(init: unit -> 'Model * Cmd<'Msg>, update: 'Msg -> 'Model -> 'Model * Cmd<'Msg>) =
+        Solid.createElmishStore(Program.mkProgram init update (fun _ _ -> ()))

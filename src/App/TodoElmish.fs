@@ -21,7 +21,7 @@ module private App =
     }
 
     type State =
-        { Todos: Todo list }
+        { Todos: Todo array }
 
     type Msg =
         | AddNewTodo of string
@@ -39,10 +39,10 @@ module private App =
             Editing = None
         }
 
-    let initTodos() = [
+    let initTodos() = [|
         newTodo "Learn F#"
         { newTodo "Learn Elmish" with Completed = true }
-    ]
+    |]
 
     let init () =
         { Todos = initTodos() }, Cmd.none
@@ -50,16 +50,16 @@ module private App =
     let update (msg: Msg) (state: State) =
         match msg with
         | AddNewTodo txt ->
-            { state with Todos = (newTodo txt)::state.Todos }, Cmd.none
+            { state with Todos = Array.append [|newTodo txt|] state.Todos }, Cmd.none
 
         | DeleteTodo todoId ->
             state.Todos
-            |> List.filter (fun todo -> todo.Id <> todoId)
+            |> Array.filter (fun todo -> todo.Id <> todoId)
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | ToggleCompleted todoId ->
             state.Todos
-            |> List.map
+            |> Array.map
                 (fun todo ->
                     if todo.Id = todoId then
                         let completed = not todo.Completed
@@ -70,7 +70,7 @@ module private App =
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | StartEditingTodo todoId ->
-            state.Todos |> List.map (fun t ->
+            state.Todos |> Array.map (fun t ->
                 match t.Editing with
                 | _ when t.Id = todoId -> { t with Editing = Some t.Description }
                 | Some _ -> { t with Editing = None }
@@ -78,14 +78,14 @@ module private App =
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | CancelEdit ->
-            state.Todos |> List.map (fun t ->
+            state.Todos |> Array.map (fun t ->
                 if Option.isSome t.Editing
                 then { t with Editing = None }
                 else t)
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | ApplyEdit txt ->
-            state.Todos |> List.map (fun t ->
+            state.Todos |> Array.map (fun t ->
                 match t.Editing with
                 | Some _ ->
                     { t with Description = txt; Editing = None }
@@ -227,9 +227,7 @@ open Util
 type Components with
     [<JSX.Component>]
     static member TodoElmish() =
-        // Solid can optimize updates better if we only use plain objects and arrays
-        // so we create an according transformation to be used in the view
-        let todos, dispatch = Solid.createElmishStore(init, update, fun (m: State) -> List.toArray m.Todos)
+        let model, dispatch = Solid.createElmishStore(init, update)
 
         Html.fragment [
             Html.p [
@@ -243,7 +241,7 @@ type Components with
 
             Html.ul [
                 Html.children [
-                    Solid.For(todos, fun todo _ ->
+                    Solid.For(model.Todos, fun todo _ ->
                         TodoView todo dispatch)
                 ]
             ]
