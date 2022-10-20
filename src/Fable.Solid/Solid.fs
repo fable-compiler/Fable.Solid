@@ -4,6 +4,34 @@ open System
 open Fable.Core
 open Fable.Core.JsInterop
 
+[<RequireQualifiedAccess; StringEnum>]
+type SolidResourceState =
+    /// Hasn't started loading, no value yet
+    | Unresolved
+    /// It's loading, no value yet
+    | Pending
+    /// Finished loading, has value
+    | Ready
+    /// It's re-loading, `latest` has value
+    | Refreshing
+    /// Finished loading with an error, no value
+    | Errored
+
+type SolidResource<'T> =
+    /// Attention, will be undefined while loading
+    [<Emit("$0()")>]
+    abstract current: 'T
+    abstract state: SolidResourceState
+    abstract loading: bool
+    abstract error: exn option
+    /// Unlike `current`, it keeps the latest value while re-loading
+    /// Attention, will be undefined until first value has been loaded
+    abstract latest: 'T
+
+type SolidResourceManager<'T> =
+    abstract mutate: 'T -> 'T
+    abstract refetch: unit -> JS.Promise<'T>
+
 type SolidStore<'T> =
     [<Emit("$0")>]
     abstract Value: 'T
@@ -60,6 +88,14 @@ type Solid =
 
     [<ImportMember("solid-js")>]
     static member createEffect(effect: 'T -> 'T, initialValue: 'T): unit = jsNative
+
+    /// Fetcher will be called immediately
+    [<ImportMember("solid-js"); ParamObject(fromIndex=1)>]
+    static member createResource(fetcher: unit -> 'T, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
+
+    /// Fetcher will be called only when source signal returns `Some('U)`
+    [<ImportMember("solid-js"); ParamObject(fromIndex=2)>]
+    static member createResource(source: unit -> 'U option, fetcher: 'U -> 'T, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
 
     static member createRef<'El when 'El :> Browser.Types.Element>(): 'El ref = ref Unchecked.defaultof<'El>
 
