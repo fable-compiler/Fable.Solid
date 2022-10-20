@@ -21,7 +21,7 @@ module private Util =
         let inputRef = Solid.createRef<HTMLInputElement>()
         let position, setPosition = Solid.createSignal(25)
 
-        JSX.jsx $"""
+        JSX.html $"""
         <>
             <div>
                 <input type="range" min="1" max="100" value={position()}

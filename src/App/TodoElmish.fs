@@ -5,6 +5,7 @@ open Fable.Core
 open Browser.Types
 open Feliz.JSX.Solid
 open Elmish.Solid
+
 open type Components
 
 printfn $"Loading {__SOURCE_FILE__}..."
@@ -13,15 +14,17 @@ module private App =
     open System
     open Elmish
 
-    type Todo = {
-        Id: Guid
-        Description: string
-        Editing: string option
-        Completed: bool
-    }
+    type Todo =
+        {
+            Id: Guid
+            Description: string
+            Editing: string option
+            Completed: bool
+        }
 
-    type State =
-        { Todos: Todo array }
+    // member _.Foo = "foo"
+
+    type State = { Todos: Todo array }
 
     type Msg =
         | AddNewTodo of string
@@ -39,18 +42,23 @@ module private App =
             Editing = None
         }
 
-    let initTodos() = [|
-        newTodo "Learn F#"
-        { newTodo "Learn Elmish" with Completed = true }
-    |]
+    let initTodos () =
+        [|
+            newTodo "Learn F#"
+            { newTodo "Learn Elmish" with
+                Completed = true
+            }
+        |]
 
-    let init () =
-        { Todos = initTodos() }, Cmd.none
+    let init () = { Todos = initTodos () }, Cmd.none
 
     let update (msg: Msg) (state: State) =
         match msg with
         | AddNewTodo txt ->
-            { state with Todos = Array.append [|newTodo txt|] state.Todos }, Cmd.none
+            { state with
+                Todos = Array.append [| newTodo txt |] state.Todos
+            },
+            Cmd.none
 
         | DeleteTodo todoId ->
             state.Todos
@@ -59,18 +67,17 @@ module private App =
 
         | ToggleCompleted todoId ->
             state.Todos
-            |> Array.map
-                (fun todo ->
-                    if todo.Id = todoId then
-                        let completed = not todo.Completed
-                        { todo with
-                            Completed = completed }
-                    else
-                        todo)
+            |> Array.map (fun todo ->
+                if todo.Id = todoId then
+                    let completed = not todo.Completed
+                    { todo with Completed = completed }
+                else
+                    todo)
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | StartEditingTodo todoId ->
-            state.Todos |> Array.map (fun t ->
+            state.Todos
+            |> Array.map (fun t ->
                 match t.Editing with
                 | _ when t.Id = todoId -> { t with Editing = Some t.Description }
                 | Some _ -> { t with Editing = None }
@@ -78,17 +85,23 @@ module private App =
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | CancelEdit ->
-            state.Todos |> Array.map (fun t ->
-                if Option.isSome t.Editing
-                then { t with Editing = None }
-                else t)
+            state.Todos
+            |> Array.map (fun t ->
+                if Option.isSome t.Editing then
+                    { t with Editing = None }
+                else
+                    t)
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
         | ApplyEdit txt ->
-            state.Todos |> Array.map (fun t ->
+            state.Todos
+            |> Array.map (fun t ->
                 match t.Editing with
                 | Some _ ->
-                    { t with Description = txt; Editing = None }
+                    { t with
+                        Description = txt
+                        Editing = None
+                    }
                 | None -> t)
             |> fun todos -> { state with Todos = todos }, Cmd.none
 
@@ -104,7 +117,7 @@ module private Util =
             dispatchOnEnter el.value
             el.value <- ""
         | "Escape" ->
-            dispatchOnEscape()
+            dispatchOnEscape ()
             el.value <- ""
             el.blur ()
         | _ -> ()
@@ -112,7 +125,9 @@ module private Util =
     [<JSX.Component>]
     let InputField (dispatch: Msg -> unit) =
         let mutable input = Unchecked.defaultof<HTMLInputElement>
-        JSX.jsx $"""
+
+        JSX.jsx
+            $"""
         <div class="field has-addons">
             <div class="control is-expanded">
                 <input class="input is-medium"
@@ -124,9 +139,9 @@ module private Util =
             <div class="control">
                 <button class="button is-primary is-medium"
                     onClick={fun _ ->
-                        let txt = input.value
-                        input.value <- ""
-                        txt |> AddNewTodo |> dispatch}>
+                                 let txt = input.value
+                                 input.value <- ""
+                                 txt |> AddNewTodo |> dispatch}>
                     <i class="fa fa-plus"></i>
                 </button>
             </div>
@@ -135,108 +150,108 @@ module private Util =
 
     [<JSX.Component>]
     let Button isVisible dispatch classes (iconClasses: string list) =
-        Html.button [
-            Attr.typeButton
-            Attr.classList [
-                "button", true
-                "is-invisible", not(isVisible())
-                yield! classes
+        Html.button
+            [
+                Attr.typeButton
+                Attr.classList [ "button", true; "is-invisible", not (isVisible ()); yield! classes ]
+                Attr.style [ Css.marginRight (length.px 4) ]
+                Ev.onClick (fun _ -> dispatch ())
+                Html.children [ Html.i [ Attr.classList iconClasses ] ]
             ]
-            Attr.style [
-                Css.marginRight(length.px 4)
-            ]
-            Ev.onClick (fun _ -> dispatch())
-            Html.children [
-                Html.i [
-                    Attr.classList iconClasses
-                ]
-            ]
-        ]
 
     [<JSX.Component>]
     let TodoView (todo: Todo) dispatch =
-        let inputRef = Solid.createRef<HTMLInputElement>()
-        let isEditing() = Option.isSome todo.Editing
-        let isNotEditing() = Option.isNone todo.Editing
+        let inputRef = Solid.createRef<HTMLInputElement> ()
+        let isEditing () = Option.isSome todo.Editing
+        let isNotEditing () = Option.isNone todo.Editing
 
-        Solid.createEffect(fun () ->
-            if isEditing() then
-                inputRef.Value.select()
-                inputRef.Value.focus())
+        Solid.createEffect (fun () ->
+            if isEditing () then
+                inputRef.Value.select ()
+                inputRef.Value.focus ())
 
-        Html.li [
-            Attr.className "box"
+        Html.li
+            [
+                Attr.className "box"
 
-            Html.children [
-                Div [ "columns" ] [
-                    Div [ "column"; "is-7" ] [
-                        Solid.Show(todo.Editing, (fun editing ->
-                            Html.input [
-                                Solid.ref inputRef
-                                Attr.classList [ "input"; "is-medium" ]
-                                Attr.value editing
-                                Ev.onKeyUp (onEnterOrEscape (ApplyEdit >> dispatch) (fun _ -> dispatch CancelEdit))
-                                Ev.onBlur (fun _ -> dispatch CancelEdit)
-                            ]),
-                            fallback = Html.p [
-                                Attr.className "subtitle"
-                                Ev.onDblClick (fun _ -> dispatch (StartEditingTodo todo.Id))
-                                Attr.style [
-                                    Css.userSelectNone
-                                    Css.cursorPointer
-                                ]
-                                Html.children [
-                                    Html.text todo.Description
-                                ]
-                            ])
+                Html.children
+                    [
+                        Div
+                            [ "columns" ]
+                            [
+                                Div
+                                    [ "column"; "is-7" ]
+                                    [
+                                        Solid.Show(
+                                            todo.Editing,
+                                            (fun editing ->
+                                                Html.input
+                                                    [
+                                                        Solid.ref inputRef
+                                                        Attr.classList [ "input"; "is-medium" ]
+                                                        Attr.value editing
+                                                        Ev.onKeyUp (
+                                                            onEnterOrEscape (ApplyEdit >> dispatch) (fun _ ->
+                                                                dispatch CancelEdit)
+                                                        )
+                                                        Ev.onBlur (fun _ -> dispatch CancelEdit)
+                                                    ]),
+                                            fallback =
+                                                Html.p
+                                                    [
+                                                        Attr.className "subtitle"
+                                                        Ev.onDblClick (fun _ -> dispatch (StartEditingTodo todo.Id))
+                                                        Attr.style [ Css.userSelectNone; Css.cursorPointer ]
+                                                        Html.children [ Html.text todo.Description ]
+                                                    ]
+                                        )
+                                    ]
+
+                                Div
+                                    [ "column"; "is-4" ]
+                                    [
+                                        Button
+                                            isEditing
+                                            (fun () -> ApplyEdit inputRef.Value.value |> dispatch)
+                                            [ "is-primary", true ]
+                                            [ "fa"; "fa-save" ]
+
+                                        Button isNotEditing (fun () -> ToggleCompleted todo.Id |> dispatch)
+                                            ["is-success", todo.Completed]
+                                            ["fa"; "fa-check"]
+
+                                        Button
+                                            isNotEditing
+                                            (fun () -> StartEditingTodo todo.Id |> dispatch)
+                                            [ "is-primary", true ]
+                                            [ "fa"; "fa-edit" ]
+
+                                        Button
+                                            isNotEditing
+                                            (fun () -> DeleteTodo todo.Id |> dispatch)
+                                            [ "is-danger", true ]
+                                            [ "fa"; "fa-times" ]
+                                    ]
+                            ]
                     ]
-
-                    Div [ "column"; "is-4" ] [
-                        Button isEditing (fun () -> ApplyEdit inputRef.Value.value |> dispatch)
-                            [ "is-primary", true ]
-                            [ "fa"; "fa-save" ]
-
-                        Button isNotEditing (fun () -> ToggleCompleted todo.Id |> dispatch)
-                            [ "is-success", todo.Completed ]
-                            [ "fa"; "fa-check" ]
-
-                        Button isNotEditing (fun () -> StartEditingTodo todo.Id |> dispatch)
-                            [ "is-primary", true ]
-                            [ "fa"; "fa-edit" ]
-
-                        Button isNotEditing (fun () -> DeleteTodo todo.Id |> dispatch)
-                            [ "is-danger", true ]
-                            [ "fa"; "fa-times" ]
-                    ]
-                ]
             ]
-        ]
 
 open App
 open Util
 
 type Components with
+
     [<JSX.Component>]
     static member TodoElmish() =
-        let model, dispatch = Solid.createElmishStore(init, update)
+        let model, dispatch = Solid.createElmishStore (init, update)
 
-        Html.fragment [
-            Html.p [
-                Attr.className "title"
-                Html.children [
-                    Html.text "Elmish.Solid To-Do List"
-                ]
-            ]
-
-            InputField dispatch
-
-            Html.ul [
-                Html.children [
-                    Solid.For(model.Todos, fun todo _ ->
-                        TodoView todo dispatch)
-                ]
-            ]
-        ]
+        JSX.jsx $"""
+        <>
+            <p class="title">To-Do List</p>
+            {InputField dispatch}
+            <ul>{Solid.For(model.Todos, (fun todo _ -> TodoView todo dispatch))}</ul>
+        </>
+        """
 
 (*
 module TodoNonElmish =

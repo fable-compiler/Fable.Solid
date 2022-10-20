@@ -7,9 +7,10 @@ open Feliz.JSX.Solid
 printfn $"Loading {__SOURCE_FILE__}..."
 
 type Components with
+
     [<JSX.Component>]
     static member Svg() =
-        let gradient, setGradient = Solid.createSignal(5)
+        let gradient, setGradient = Solid.createSignal (5)
 
         // let num, setNum = Solid.createSignal(0)
         // let _ = JS.setInterval (fun () -> num() + 1 % 255 |> setNum) 30
@@ -20,7 +21,7 @@ type Components with
                     Attr.typeRange
                     Attr.min 1
                     Attr.max 100
-                    Attr.value $"{gradient()}"
+                    Attr.value $"{gradient ()}"
                     Ev.onTextInput (fun (value: string) -> value |> int |> setGradient)
                 ]
             ]
@@ -40,29 +41,17 @@ type Components with
                             Attr.y2 (length.perc 0)
                             Svg.children [
                                 Svg.stop [
-                                    Attr.offset (length.perc (gradient()))
-                                    Attr.style [
-                                        "stop-color", "rgb(255,255,3)"
-                                        "stop-opacity", "1"
-                                    ]
+                                    Attr.offset (length.perc (gradient ()))
+                                    Attr.style [ "stop-color", "rgb(255,255,3)"; "stop-opacity", "1" ]
                                 ]
                                 Svg.stop [
                                     Attr.offset (length.perc 100)
-                                    Attr.style [
-                                        "stop-color", "rgb(255,0,0)"
-                                        "stop-opacity", "1"
-                                    ]
+                                    Attr.style [ "stop-color", "rgb(255,0,0)"; "stop-opacity", "1" ]
                                 ]
                             ]
                         ]
                     ]
-                    Svg.ellipse [
-                        Attr.cx 125
-                        Attr.cy 75
-                        Attr.rx 100
-                        Attr.ry 60
-                        Attr.fill "url(#gr1)"
-                    ]
+                    Svg.ellipse [ Attr.cx 125; Attr.cy 75; Attr.rx 100; Attr.ry 60; Attr.fill "url(#gr1)" ]
                 ]
             ]
 
@@ -70,11 +59,12 @@ type Components with
             // Note the interpolation hole must replace the whole attribute value (as in standard JSX)
             // We cannot interpolate only part of the attribute, e.g. `offset="{gradient()}%%"
 
-            JSX.html $"""
+            JSX.html
+                $"""
             <svg height="150" width="300">
                 <defs>
                     <linearGradient id="gr2" x1="0%%" y1="60%%" x2="100%%" y2="0%%">
-                    <stop offset={ length.perc (gradient()) } style="stop-color:rgb(52, 235, 82);stop-opacity:1" />
+                    <stop offset={length.perc (gradient ())} style="stop-color:rgb(52, 235, 82);stop-opacity:1" />
                     <stop offset="100%%" style="stop-color:rgb(52, 150, 235);stop-opacity:1" />
                     </linearGradient>
                 </defs>
@@ -83,15 +73,14 @@ type Components with
             </svg>
             """
 
-            // Html.div [
-            //     Attr.style [
-            //         Css.color $"rgb({num()}, 180, {num()})"
-            //         Css.fontWeight 800
-            //         Css.fontSize (length.px(num()))
-            //     ]
-            //     Html.children [
-            //         Html.text $"Number is {num()}"
-            //     ]
-            // ]
+        // Html.div [
+        //     Attr.style [
+        //         Css.color $"rgb({num()}, 180, {num()})"
+        //         Css.fontWeight 800
+        //         Css.fontSize (length.px(num()))
+        //     ]
+        //     Html.children [
+        //         Html.text $"Number is {num()}"
+        //     ]
+        // ]
         ]
-
