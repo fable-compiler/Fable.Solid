@@ -8,6 +8,7 @@ open type Components
 
 type Lazy =
     static member Counter() = Solid.lazyImport Counter
+    static member Resource() = Solid.lazyImport Resource
     static member Svg() = Solid.lazyImport Svg
     static member Sketch() = Solid.lazyImport Sketch
     static member TodoElmish() = Solid.lazyImport TodoElmish
@@ -29,6 +30,7 @@ let Tabs() =
                 Html.ul [
                     Html.children [
                         Tab("/counter", "Counter")
+                        Tab("/resource", "Resource")
                         Tab("/svg", "Svg")
                         Tab("/sketch", "Sketch")
                         Tab("/elmish", "Todo Elmish")
@@ -46,6 +48,7 @@ let Tabs() =
             Html.children [
                 Router.Routes [
                     Router.Route("/counter", ``component`` = Lazy.Counter)
+                    Router.Route("/resource", ``component`` = Lazy.Resource)
                     Router.Route("/svg", ``component`` = Lazy.Svg)
                     Router.Route("/sketch", ``component`` = Lazy.Sketch)
                     Router.Route("/elmish", ``component`` = Lazy.TodoElmish)
