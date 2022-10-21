@@ -12,11 +12,13 @@
     <Compile Include="Sketch.fs" />
     <Compile Include="TodoElmish.fs" />
     <Compile Include="Shoelace.fs" />
-    <Compile Include="App.fs" />
+      <Compile Include="Resource.fs" />
+      <Compile Include="App.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Fable.Core" Version="4.0.0-theta-005" />
+    <PackageReference Include="Fable.Fetch" Version="2.6.0" />
     <ProjectReference Include="..\Elmish.Solid\Elmish.Solid.fsproj" />
     <PackageReference Include="Feliz.JSX.Solid" Version="1.0.0-beta-001" />
   </ItemGroup>
