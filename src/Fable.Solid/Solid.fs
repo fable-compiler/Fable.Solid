@@ -91,11 +91,11 @@ type Solid =
 
     /// Fetcher will be called immediately
     [<ImportMember("solid-js"); ParamObject(fromIndex=1)>]
-    static member createResource(fetcher: unit -> 'T, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
+    static member createResource(fetcher: unit -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
 
     /// Fetcher will be called only when source signal returns `Some('U)`
     [<ImportMember("solid-js"); ParamObject(fromIndex=2)>]
-    static member createResource(source: unit -> 'U option, fetcher: 'U -> 'T, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
+    static member createResource(source: unit -> 'U option, fetcher: 'U -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
 
     static member createRef<'El when 'El :> Browser.Types.Element>(): 'El ref = ref Unchecked.defaultof<'El>
 

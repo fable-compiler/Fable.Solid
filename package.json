@@ -2,7 +2,7 @@
     "private": "true",
     "scripts": {
         "postinstall": "dotnet tool restore",
-        "start": "dotnet fable watch src/App -s -o dist -e .jsx --run vite",
+        "start": "dotnet fable watch src/App -o dist -e .jsx --run vite",
         "publish": "dotnet fsi build.fsx publish"
     },
     "dependencies": {
