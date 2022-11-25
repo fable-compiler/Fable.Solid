@@ -77,5 +77,13 @@ type Solid with
 
     /// Initialize a SolidJS store using an Elmish program: https://www.solidjs.com/tutorial/stores_nested_reactivity
     /// Attention: use arrays instead of lists for better performance
-    static member inline createElmishStore(init: unit -> 'Model * Cmd<'Msg>, update: 'Msg -> 'Model -> 'Model * Cmd<'Msg>) =
-        Solid.createElmishStore(Program.mkProgram init update (fun _ _ -> ()))
+    static member inline createElmishStore(init: unit -> 'Model * Cmd<'Msg>, update: 'Msg -> 'Model -> 'Model * Cmd<'Msg>
+#if DEBUG
+            , [<CallerFilePath; Optional; DefaultParameterValue("")>] callerPath: string
+#endif
+    ) =
+        Solid.createElmishStore(Program.mkProgram init update (fun _ _ -> ())
+#if DEBUG
+        , callerPath
+#endif
+        )
