@@ -51,6 +51,7 @@ let Tabs() =
                     Router.Route("/resource", ``component`` = Lazy.Resource)
                     Router.Route("/svg", ``component`` = Lazy.Svg)
                     Router.Route("/sketch", ``component`` = Lazy.Sketch)
+                    Router.Route("/", ``component`` = Lazy.Sketch)
                     Router.Route("/elmish", ``component`` = Lazy.TodoElmish)
                     Router.Route("/shoelace", ``component`` = Lazy.Shoelace)
                 ]
