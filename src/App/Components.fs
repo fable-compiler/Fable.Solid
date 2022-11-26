@@ -3,7 +3,16 @@ namespace global
 open Fable.Core
 open Feliz.JSX.Solid
 
+
+module Color =
+    let context = Solid.createContext()
+
 type Components =
+    [<JSX.Component>]
+    static member ColorProvider(color: string, children) =
+        let color, setColor = Solid.createSignal(color)
+        Color.context.Provider((color, setColor), children)
+
     [<JSX.Component>]
     static member Div (classes: string seq) children =
         Html.div [

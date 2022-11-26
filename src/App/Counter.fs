@@ -4,7 +4,6 @@ module Counter
 open System
 open Fable.Core
 open Feliz.JSX.Solid
-open Browser.Types
 
 open type Components
 
@@ -47,6 +46,26 @@ type Components with
         )
 
     [<JSX.Component>]
+    static member ColorInput() =
+        let color, setColor = Solid.useContext(Color.context)
+        Html.p [
+            Html.children [
+                Html.text "Enter color: "
+                TextInput(color(), setColor)
+                Html.span [
+                    Attr.style [
+                        Css.marginLeft 5
+                        Css.padding 3
+                        Css.backgroundColor (color())
+                    ]
+                    Html.children [
+                        Html.text "color"
+                    ]
+                ]
+            ]
+        ]
+
+    [<JSX.Component>]
     static member Counter() =
         let count, setCount = Solid.createSignal (0)
         let doubled () = count () * 2
@@ -66,4 +85,10 @@ type Components with
 
                 Html.hr []
                 Components.DivideBy()
+
+                Html.hr []
+                Html.p "These components share state through context provided by the App parent"
+                Html.br []
+                Components.ColorInput()
+                Components.ColorInput()
             ]
