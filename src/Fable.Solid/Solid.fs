@@ -4,6 +4,10 @@ open System
 open Fable.Core
 open Fable.Core.JsInterop
 
+type SolidContext<'T> =
+    [<JSX.Component>]
+    abstract Provider: value: 'T * children: JSX.Element -> JSX.Element
+
 [<RequireQualifiedAccess; StringEnum>]
 type SolidResourceState =
     /// Hasn't started loading, no value yet
@@ -91,11 +95,20 @@ type Solid =
 
     /// Fetcher will be called immediately
     [<ImportMember("solid-js"); ParamObject(fromIndex=1)>]
-    static member createResource(fetcher: unit -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
+    static member createResource(fetcher: unit -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T> = jsNative
 
     /// Fetcher will be called only when source signal returns `Some('U)`
     [<ImportMember("solid-js"); ParamObject(fromIndex=2)>]
-    static member createResource(source: unit -> 'U option, fetcher: 'U -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T>  = jsNative
+    static member createResource(source: unit -> 'U option, fetcher: 'U -> JS.Promise<'T>, ?initialValue: 'T): SolidResource<'T> * SolidResourceManager<'T> = jsNative
+
+    [<ImportMember("solid-js")>]
+    static member createContext<'T>(?defaultValue: 'T): SolidContext<'T> = jsNative
+
+    [<ImportMember("solid-js")>]
+    static member useContext(context: SolidContext<'T>): 'T = jsNative
+
+    [<ImportMember("solid-js")>]
+    static member createRoot(fn: (* dispose *) Action -> 'T): 'T = jsNative
 
     static member createRef<'El when 'El :> Browser.Types.Element>(): 'El ref = ref Unchecked.defaultof<'El>
 
@@ -141,7 +154,7 @@ type Solid =
     static member Match(``when``: 'T option, children: 'T -> JSX.Element): JSX.Element = jsNative
 
     [<ImportMember("solid-js"); JSX.Component>]
-    static member ErrorBoundary(fallback: exn -> Action -> JSX.Element, children: JSX.Element): JSX.Element = jsNative
+    static member ErrorBoundary(fallback: exn -> (* reset *) Action -> JSX.Element, children: JSX.Element): JSX.Element = jsNative
 
     [<ImportMember("solid-js/store")>]
     static member createStore(store: 'T): SolidStore<'T> * SolidStoreSetter<'T> = jsNative

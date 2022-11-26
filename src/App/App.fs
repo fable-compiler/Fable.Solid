@@ -47,11 +47,11 @@ let Tabs() =
             ]
             Html.children [
                 Router.Routes [
+                    Router.Route("/", ``component`` = Lazy.Counter)
                     Router.Route("/counter", ``component`` = Lazy.Counter)
                     Router.Route("/resource", ``component`` = Lazy.Resource)
                     Router.Route("/svg", ``component`` = Lazy.Svg)
                     Router.Route("/sketch", ``component`` = Lazy.Sketch)
-                    Router.Route("/", ``component`` = Lazy.Sketch)
                     Router.Route("/elmish", ``component`` = Lazy.TodoElmish)
                     Router.Route("/shoelace", ``component`` = Lazy.Shoelace)
                 ]
@@ -59,4 +59,10 @@ let Tabs() =
         ]
     ]
 
-Solid.render((fun () -> Router.Router(Tabs())), document.getElementById("app-container"))
+[<JSX.Component>]
+let App() =
+    Router.Router(
+        ColorProvider("green", Tabs())
+    )
+
+Solid.render((fun () -> Router.Router(App())), document.getElementById("app-container"))
