@@ -18,3 +18,6 @@ type Router =
 
     [<ImportMember("@solidjs/router"); JSX.Component>]
     static member Link(href: string, children: JSX.Element): JSX.Element = jsNative
+
+    [<ImportMember("@solidjs/router")>]
+    static member useIsRouting(): unit -> bool = jsNative
