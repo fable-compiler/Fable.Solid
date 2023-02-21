@@ -20,7 +20,7 @@ type Components with
             JSX.jsx
                 $"""
             <>
-                <p>Error: {err.Message}</p>
+                <p>{$"{err}"}</p>
                 <button class="button" onClick={fun _ ->
                                                     // Make sure the divisor is corrected before resetting
                                                     setDivisor 1.

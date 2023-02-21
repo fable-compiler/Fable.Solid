@@ -18,6 +18,15 @@ type Lazy =
 let Tab(href: string, txt: string) =
     Html.li (Router.Link(href, Html.text txt))
 
+let LoadingWrapper(inner: unit -> JSX.Element) () =
+    Solid.Suspense(
+        Html.text "Loading...",
+        Solid.ErrorBoundary(
+            (fun (e: exn) (_) -> JSX.text $"{e}"),
+            inner()
+        )
+    )
+
 [<JSX.Component>]
 let Tabs() =
     Html.fragment [
@@ -45,15 +54,18 @@ let Tabs() =
                 Css.maxWidth 800
                 Css.padding 20
             ]
+
             Html.children [
                 Router.Routes [
-                    Router.Route("/", ``component`` = Lazy.Counter)
-                    Router.Route("/counter", ``component`` = Lazy.Counter)
-                    Router.Route("/resource", ``component`` = Lazy.Resource)
-                    Router.Route("/svg", ``component`` = Lazy.Svg)
-                    Router.Route("/sketch", ``component`` = Lazy.Sketch)
-                    Router.Route("/elmish", ``component`` = Lazy.TodoElmish)
-                    Router.Route("/shoelace", ``component`` = Lazy.Shoelace)
+                    Html.fragment [
+                        Router.Route("/",         LoadingWrapper(Lazy.Counter))
+                        Router.Route("/counter",  LoadingWrapper(Lazy.Counter))
+                        Router.Route("/resource", LoadingWrapper(Lazy.Resource))
+                        Router.Route("/svg",      LoadingWrapper(Lazy.Svg))
+                        Router.Route("/sketch",   LoadingWrapper(Lazy.Sketch))
+                        Router.Route("/elmish",   LoadingWrapper(Lazy.TodoElmish))
+                        Router.Route("/shoelace", LoadingWrapper(Lazy.Shoelace))
+                    ]
                 ]
             ]
         ]
@@ -65,4 +77,4 @@ let App() =
         ColorProvider("green", Tabs())
     )
 
-Solid.render((fun () -> Router.Router(App())), document.getElementById("app-container"))
+Solid.render((fun () -> App()), document.getElementById("app-container"))

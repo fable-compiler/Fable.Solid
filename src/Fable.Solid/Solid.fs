@@ -156,6 +156,9 @@ type Solid =
     [<ImportMember("solid-js"); JSX.Component>]
     static member ErrorBoundary(fallback: exn -> (* reset *) Action -> JSX.Element, children: JSX.Element): JSX.Element = jsNative
 
+    [<ImportMember("solid-js"); JSX.Component>]
+    static member Suspense(fallback: JSX.Element, children: JSX.Element): JSX.Element = jsNative
+
     [<ImportMember("solid-js/store")>]
     static member createStore(store: 'T): SolidStore<'T> * SolidStoreSetter<'T> = jsNative
 
