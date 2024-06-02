@@ -8,17 +8,21 @@ module Color =
     let context = Solid.createContext()
 
 type Components =
+
     [<JSX.Component>]
     static member ColorProvider(color: string, children) =
         let color, setColor = Solid.createSignal(color)
         Color.context.Provider((color, setColor), children)
 
-    [<JSX.Component>]
-    static member Div (classes: string seq) children =
-        Html.div [
-            Attr.classList classes
-            Html.children children
-        ]
+
+    // does not work anymore(2024), generates invalid JSX: <Components_Div classes={["column", "is-4"]}>
+
+    // [<JSX.Component>]
+    // static member Div (classes: string seq) children =
+    //     Html.div [
+    //         Attr.classList classes
+    //         Html.children children
+    //     ]
 
     [<JSX.Component>]
     static member TextInput(value: string, onInput: string -> unit) =

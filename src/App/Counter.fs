@@ -47,23 +47,15 @@ type Components with
 
     [<JSX.Component>]
     static member ColorInput() =
-        let color, setColor = Solid.useContext(Color.context)
-        Html.p [
-            Html.children [
-                Html.text "Enter color: "
-                TextInput(color(), setColor)
-                Html.span [
-                    Attr.style [
-                        Css.marginLeft 5
-                        Css.padding 3
-                        Css.backgroundColor (color())
-                    ]
-                    Html.children [
-                        Html.text "color"
-                    ]
-                ]
-            ]
-        ]
+        let color, setColor = Solid.useContext (Color.context)
+
+        Html.p
+            [ Html.children
+                  [ Html.text "Enter color: "
+                    TextInput(color (), setColor)
+                    Html.span
+                        [ Attr.style [ Css.marginLeft 5; Css.padding 3; Css.backgroundColor (color ()) ]
+                          Html.children [ Html.text "color" ] ] ] ]
 
     [<JSX.Component>]
     static member Counter() =
@@ -72,23 +64,18 @@ type Components with
         let quadrupled () = doubled () * 2
 
         Html.fragment
-            [
-                Html.p $"{count ()} * 2 = {doubled ()}"
-                Html.p $"{doubled ()} * 2 = {quadrupled ()}"
-                Html.br []
-                Html.button
-                    [
-                        Attr.className "button"
-                        Ev.onClick (fun _ -> count () + 1 |> setCount)
-                        Html.children [ Html.text $"Click me!" ]
-                    ]
+            [ Html.p $"{count ()} * 2 = {doubled ()}"
+              Html.p $"{doubled ()} * 2 = {quadrupled ()}"
+              Html.br []
+              Html.button
+                  [ Attr.className "button"
+                    Ev.onClick (fun _ -> count () + 1 |> setCount)
+                    Html.children [ Html.text $"Click me!" ] ]
 
-                Html.hr []
-                Components.DivideBy()
+              Html.hr []
+              Components.DivideBy()
 
-                Html.hr []
-                Html.p "These components share state through context provided by the App parent"
-                Html.br []
-                Components.ColorInput()
-                Components.ColorInput()
-            ]
+              Html.hr []
+              Html.p "These components share state through context provided by the App parent"
+              Html.br []
+              Components.ColorProvider("red", Html.fragment [ Components.ColorInput(); Components.ColorInput() ]) ]

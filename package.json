@@ -2,15 +2,15 @@
     "private": "true",
     "scripts": {
         "postinstall": "dotnet tool restore",
-        "start": "dotnet fable watch src/App -o dist -e .jsx --run vite",
+        "start": "dotnet fable watch ./src/App --outDir ./_watch --extension .jsx --run vite",
         "publish": "dotnet fsi build.fsx publish"
     },
     "dependencies": {
-        "@solidjs/router": "^0.4.3",
-        "solid-js": "^1.5.7"
+        "@solidjs/router": "^0.13.3",
+        "solid-js": "^1.8.17"
     },
     "devDependencies": {
-        "vite": "^3.1.6",
-        "vite-plugin-solid": "^2.3.9"
+        "vite": "^5.2.12",
+        "vite-plugin-solid": "^2.10.2"
     }
 }

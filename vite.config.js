@@ -3,5 +3,17 @@ import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
   clearScreen: false,
-  plugins: [solidPlugin()],
+  server: {
+    watch: {
+        ignored: [
+            "**/*.md" , // Don't watch markdown files
+            "**/*.fs" , // Don't watch F# files
+            "**/*.fsx"  // Don't watch F# script files
+        ]
+    }
+  },
+
+  plugins: [
+    solidPlugin()
+  ],
 });
