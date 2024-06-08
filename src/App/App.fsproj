@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fable.Core" Version="4.0.0-theta-005" />
-    <PackageReference Include="Fable.Fetch" Version="2.6.0" />
+    <PackageReference Include="Fable.Core" Version="4.3.0" />
+    <PackageReference Include="Fable.Fetch" Version="2.7.0" />
+    <PackageReference Include="Feliz.JSX.Solid" Version="1.0.0-beta-002" />
     <ProjectReference Include="..\Elmish.Solid\Elmish.Solid.fsproj" />
-    <PackageReference Include="Feliz.JSX.Solid" Version="1.0.0-beta-001" />
   </ItemGroup>
 
 </Project>
