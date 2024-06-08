@@ -56,7 +56,11 @@ module private App =
         match msg with
         | AddNewTodo txt ->
             { state with
-                Todos = Array.append [| newTodo txt |] state.Todos
+                Todos = // only add todo if non-whitespace:
+                    if  not (System.String.IsNullOrWhiteSpace txt) then
+                        Array.append [| newTodo txt |] state.Todos
+                    else
+                        state.Todos
             },
             Cmd.none
 
