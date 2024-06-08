@@ -159,7 +159,8 @@ module private Util =
                 Attr.typeButton
                 Attr.classList [ "button", true; "is-invisible", not (isVisible ()); yield! classes ]
                 Attr.style [ Css.marginRight (length.px 4) ]
-                Ev.onClick (fun _ -> dispatch ())
+                Ev.onClick (fun _ -> dispatch ()) // blur event needs to be prevented for this to fire
+                Ev.onMouseDown (fun e -> e.preventDefault ()) // this will prevent the blur event from firing
                 Html.children [ Html.i [ Attr.classList iconClasses ] ]
             ]
 
@@ -188,12 +189,11 @@ module private Util =
                                     [
                                         Solid.Show(
                                             todo.Editing,
-                                            (fun editing ->
-                                                Html.input
+                                            (   Html.input
                                                     [
                                                         Solid.ref inputRef
                                                         Attr.classList [ "input"; "is-medium" ]
-                                                        Attr.value editing
+                                                        Attr.value todo.Editing.Value
                                                         Ev.onKeyUp (
                                                             onEnterOrEscape (ApplyEdit >> dispatch) (fun _ ->
                                                                 dispatch CancelEdit)
@@ -220,7 +220,8 @@ module private Util =
                                             [ "is-primary", true ]
                                             [ "fa"; "fa-save" ]
 
-                                        Button isNotEditing (fun () -> ToggleCompleted todo.Id |> dispatch)
+                                        Button isNotEditing
+                                            (fun () -> ToggleCompleted todo.Id |> dispatch)
                                             ["is-success", todo.Completed]
                                             ["fa"; "fa-check"]
 
