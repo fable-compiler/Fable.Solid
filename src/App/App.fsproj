@@ -12,8 +12,9 @@
     <Compile Include="Sketch.fs" />
     <Compile Include="TodoElmish.fs" />
     <Compile Include="Shoelace.fs" />
-      <Compile Include="Resource.fs" />
-      <Compile Include="App.fs" />
+    <Compile Include="Resource.fs" />
+    <Compile Include="Routing.fs" />
+    <Compile Include="App.fs" />
   </ItemGroup>
 
   <ItemGroup>
