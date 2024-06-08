@@ -13,12 +13,17 @@ type Components =
         let color, setColor = Solid.createSignal(color)
         Color.context.Provider((color, setColor), children)
 
+    // [<JSX.Component>]
+    // static member Div (classes: string seq) children =
+    //     Html.div [
+    //         Attr.classList classes
+    //         Html.children children
+    //     ] // this does not work, only the below works:
+
     [<JSX.Component>]
     static member Div (classes: string seq) children =
-        Html.div [
-            Attr.classList classes
-            Html.children children
-        ]
+        JSX.jsx $"""<div class={String.concat " " classes}>{children}</div>"""
+
 
     [<JSX.Component>]
     static member TextInput(value: string, onInput: string -> unit) =
