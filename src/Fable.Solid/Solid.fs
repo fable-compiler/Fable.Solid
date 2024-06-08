@@ -139,10 +139,13 @@ type Solid =
     static member For(each: 'T[], children: 'T -> (unit -> int) -> JSX.Element, ?fallback: JSX.Element): JSX.Element = jsNative
 
     [<ImportMember("solid-js"); JSX.Component>]
-    static member Show(``when``: bool, children: JSX.Element): JSX.Element = jsNative
+    static member Show(``when``: bool, children: JSX.Element, ?fallback): JSX.Element = jsNative
 
     [<ImportMember("solid-js"); JSX.Component>]
-    static member Show(``when``: 'T option, children: 'T -> JSX.Element, ?fallback: JSX.Element): JSX.Element = jsNative
+    static member Show(``when``: 'T option, children: JSX.Element, ?fallback: JSX.Element): JSX.Element = jsNative
+
+    // [<ImportMember("solid-js"); JSX.Component>]
+    // static member Show(``when``: 'T option, children: 'T -> JSX.Element, ?fallback: JSX.Element): JSX.Element = jsNative
 
     [<ImportMember("solid-js"); JSX.Component>]
     static member Switch(children: JSX.Element list, ?fallback: JSX.Element): JSX.Element = jsNative
