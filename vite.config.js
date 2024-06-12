@@ -16,4 +16,5 @@ export default defineConfig({
   plugins: [
     solidPlugin()
   ],
+  base: "./" // This is important for the app to work correctly when deployed to GitHub Pages to start al paths with a ./
 });
