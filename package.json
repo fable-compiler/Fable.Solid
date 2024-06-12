@@ -3,6 +3,7 @@
     "scripts": {
         "postinstall": "dotnet tool restore",
         "start": "dotnet fable watch ./src/App --outDir ./_watch --extension .jsx --run vite",
+        "build": "dotnet fable ./src/App --outDir ./_watch --extension .jsx --run npx vite build --outDir ./docs",
         "publish": "dotnet fsi build.fsx publish"
     },
     "dependencies": {
